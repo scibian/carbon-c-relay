@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+if dpkg-maintscript-helper supports mv_conffile 2>/dev/null; then
+    dpkg-maintscript-helper mv_conffile /etc/carbon/carbon-c-relay.conf /etc/carbon-c-relay.conf 0.40~ -- "$@"
+fi
+
+case "$1" in
+    purge)
+        [ ! -f /etc/default/carbon-c-relay ] || rm /etc/default/carbon-c-relay
+
+        if [ -x "$(command -v deluser)" ]; then
+            deluser --quiet --system carbon-c-relay > /dev/null || true
+        else
+            echo >&2 "not removing carbon-c-relay system account because deluser command was not found"
+        fi
+
+    ;;
+
+    abort-install|abort-upgrade|remove|upgrade|failed-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+
+#DEBHELPER#

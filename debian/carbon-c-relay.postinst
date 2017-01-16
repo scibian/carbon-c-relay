@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+if dpkg-maintscript-helper supports mv_conffile 2>/dev/null; then
+    dpkg-maintscript-helper mv_conffile /etc/carbon/carbon-c-relay.conf /etc/carbon-c-relay.conf 0.40~ -- "$@"
+fi
+
+case "$1" in
+    configure)
+        adduser --quiet --system --no-create-home \
+            --home /var/lib/carbon-c-relay \
+            --group \
+            carbon-c-relay
+    ;;
+esac
+
+#DEBHELPER#

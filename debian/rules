@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+UPSTREAM_VERSION := $(strip $(shell dpkg-parsechangelog| sed -e '/^Version/!d' -e 's,.* ,,;s,-.*,,'))
+%:
+	dh $@ --with systemd
+
+override_dh_auto_install:
+	cp relay carbon-c-relay
+	help2man \
+	    -n 'carbon-compatible graphite line mode relay' \
+	    -s 1 \
+	    -S 'Debian' \
+	    -N ./carbon-c-relay \
+	    --version-string='$(UPSTREAM_VERSION)' |\
+	   	 sed 	-e 's,^.B relay,.B carbon-c-relay,' \
+		 	-e '/worker threads/s,to [0-9]*,to the number of cpu cores,' > debian/carbon-c-relay.1
+	dh_auto_install
