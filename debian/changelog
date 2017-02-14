@@ -1,3 +1,11 @@
+carbon-c-relay (2.5-1+c9+1) calibre9; urgency=medium
+
+  * Backport for Calibre9.
+  * Do not apply patch close-tcp-several-failures, it's unsure if
+    we still needed it.
+
+ -- Ana Guerrero <ana-externe.guerrero@edf.fr>  Tue, 14 Feb 2017 14:33:53 +0100
+
 carbon-c-relay (2.5-1) unstable; urgency=medium
 
   * [770fae3] Merge tag 'upstream/2.5'
@@ -60,6 +68,18 @@ carbon-c-relay (0.45-1) unstable; urgency=medium
   * [ce256b5] Generate manpage automatically.
 
  -- Bernd Zeimetz <bzed@debian.org>  Sun, 15 Nov 2015 14:28:24 +0100
+
+carbon-c-relay (0.44-1+c9+2) calibre9; urgency=low
+
+  * Add patch to close TCP conn after several failures
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Fri, 30 Oct 2015 16:03:22 +0100
+
+carbon-c-relay (0.44-1+c9+1) calibre9; urgency=medium
+
+  * Backport to Calibre 9
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Mon, 21 Sep 2015 10:35:19 +0200
 
 carbon-c-relay (0.44-1) unstable; urgency=medium
 

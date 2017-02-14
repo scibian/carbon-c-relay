@@ -1,0 +1,31 @@
+Description: close TCP conn after several failures
+Author: Rémi Palancher <remi-externe.palancher@edf.fr>
+Origin: upstream
+Forwarded: no
+Last-Update: 2015-09-24
+
+--- carbon-c-relay-0.44.orig/server.c
++++ carbon-c-relay-0.44/server.c
+@@ -83,6 +83,7 @@ server_queuereader(void *d)
+ 	self->metrics = 0;
+ 	self->ticks = 0;
+ 
++#define MAX_TCP_PARTIAL_SEND 5
+ #define FAIL_WAIT_TIME   6  /* 6 * 250ms = 1.5s */
+ #define DISCONNECT_WAIT_TIME   12  /* 12 * 250ms = 3s */
+ #define LEN_CRITICAL(Q)  (queue_free(Q) < self->bsize)
+@@ -357,8 +358,12 @@ server_queuereader(void *d)
+ 					logerr("failed to write() to %s:%u: %s\n",
+ 							self->ip, self->port,
+ 							(slen < 0 ? strerror(errno) : "uncomplete write"));
+-				close(self->fd);
+-				self->fd = -1;
++				/* close TCP conn after several failures */
++				if (self->ctype != CON_TCP || self->failure >= FAIL_WAIT_TIME) {
++					logerr("closing conn to %s:%u\n", self->ip, self->port);
++					close(self->fd);
++					self->fd = -1;
++				}
+ 				self->failure += self->failure >= FAIL_WAIT_TIME ? 0 : 1;
+ 				/* put back stuff we couldn't process */
+ 				for (; *metric != NULL; metric++) {
